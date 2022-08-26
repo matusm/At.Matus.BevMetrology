@@ -7,12 +7,11 @@ namespace At.Matus.BevMetrology
     public class SpectralQuantity
     {
         public string Name { get; private set; }
-
         public double MinWavelength => spectralValues.First().Lambda;
         public double MaxWavelength => spectralValues.Last().Lambda;
-
         public ColorCoordinates ColorCoordinates { get; private set; }
 
+        // must be called before using ColorCoordinates
         public void CalculateColor()
         {
             double X2 = BevCie.Integrate(GetValueFor, BevCie.CieX2);
