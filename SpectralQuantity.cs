@@ -9,10 +9,17 @@ namespace At.Matus.BevMetrology
         public string Name { get; private set; }
 
         public double MinWavelength => spectralValues.First().Lambda;
-
         public double MaxWavelength => spectralValues.Last().Lambda;
 
-        
+        public ColorCoordinates ColorCoordinates { get; private set; }
+
+        public void CalculateColor()
+        {
+            double X2 = BevCie.Integrate(GetValueFor, BevCie.CieX2);
+            double Y2 = BevCie.Integrate(GetValueFor, BevCie.CieY2);
+            double Z2 = BevCie.Integrate(GetValueFor, BevCie.CieZ2);
+            ColorCoordinates = new ColorCoordinates(X2, Y2, Z2);
+        }
 
         public SpectralQuantity(string name)
         {
@@ -75,7 +82,7 @@ namespace At.Matus.BevMetrology
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
-                var tokens = line.Split(',', ';', ' ','\t');
+                var tokens = line.Split(',', ';', ' ', '\t');
                 if (tokens.Length == 2)
                 {
                     double x = MyParse(tokens[0]);
