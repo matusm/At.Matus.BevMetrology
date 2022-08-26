@@ -12,6 +12,8 @@ namespace At.Matus.BevMetrology
 
         public double MaxWavelength => spectralValues.Last().Lambda;
 
+        
+
         public SpectralQuantity(string name)
         {
             Name = name.Trim();
@@ -73,7 +75,7 @@ namespace At.Matus.BevMetrology
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
-                var tokens = line.Split(',');
+                var tokens = line.Split(',', ';', ' ','\t');
                 if (tokens.Length == 2)
                 {
                     double x = MyParse(tokens[0]);
