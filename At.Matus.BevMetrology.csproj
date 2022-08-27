@@ -33,6 +33,7 @@
     <Compile Include="ColorCoordinates.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BevCie.cs" />
+    <Compile Include="ColorTemperature.cs" />
     <Compile Include="SpectralQuantityValue.cs" />
     <Compile Include="SpectralQuantity.cs" />
     <Compile Include="RandomUtil.cs" />

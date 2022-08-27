@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -9,16 +10,8 @@ namespace At.Matus.BevMetrology
         public string Name { get; private set; }
         public double MinWavelength => spectralValues.First().Lambda;
         public double MaxWavelength => spectralValues.Last().Lambda;
-        public ColorCoordinates ColorCoordinates { get; private set; }
-
-        // must be called before using ColorCoordinates
-        public void CalculateColor()
-        {
-            double X2 = BevCie.Integrate(GetValueFor, BevCie.CieX2);
-            double Y2 = BevCie.Integrate(GetValueFor, BevCie.CieY2);
-            double Z2 = BevCie.Integrate(GetValueFor, BevCie.CieZ2);
-            ColorCoordinates = new ColorCoordinates(X2, Y2, Z2);
-        }
+        public ColorCoordinates Color => CalculateColor();
+        public ColorTemperature ColorTemperature => CalculateCct();
 
         public SpectralQuantity(string name)
         {
@@ -118,6 +111,62 @@ namespace At.Matus.BevMetrology
                 return double.NaN;
         }
 
+        private ColorTemperature CalculateCct()
+        {
+            double cctTemp = EstimateCCT(Color, 500, 100000, 100);
+            double[] tPrec = { 100, 10, 1, 0.1, 0.01 };
+            foreach (var deltaT in tPrec)
+            {
+                cctTemp = EstimateCCT(Color, cctTemp - deltaT, cctTemp + deltaT, deltaT / 10);
+            }
+            var colorT = CalculateColorPlanck(cctTemp);
+            double distance = ChromaDistance(colorT.uPrime, colorT.vPrime, Color.uPrime, Color.vPrime);
+            return new ColorTemperature(cctTemp, distance);
+        }
+
+        private double EstimateCCT(ColorCoordinates color, double tMin, double tMax, double deltat)
+        {
+            double distanceMin = double.PositiveInfinity;
+            double CCT = double.NaN;
+
+            for (double T = tMin; T <= tMax; T = T + deltat)
+            {
+                var colorT = SpectralQuantity.CalculateColorPlanck(T);
+                double distance = ChromaDistance(colorT.uPrime, colorT.vPrime, color.uPrime, color.vPrime);
+
+                if (distance < distanceMin)
+                {
+                    distanceMin = distance;
+                    CCT = T;
+                }
+            }
+            return CCT;
+        }
+
+        private static double ChromaDistance(double up, double vp, double u, double v)
+        {
+            double us = (up - u) * (up - u);
+            double vs = (vp - v) * (vp - v);
+            return Math.Sqrt(us + vs * (4 / 9));
+        }
+
+        private ColorCoordinates CalculateColor()
+        {
+            double X2 = BevCie.Integrate(GetValueFor, BevCie.CieX2);
+            double Y2 = BevCie.Integrate(GetValueFor, BevCie.CieY2);
+            double Z2 = BevCie.Integrate(GetValueFor, BevCie.CieZ2);
+            return new ColorCoordinates(X2, Y2, Z2);
+        }
+
+        private static ColorCoordinates CalculateColorPlanck(double t)
+        {
+            double LPlanck(int lamb) => BevCie.LPlanck(t, lamb);
+            double X2 = BevCie.Integrate(LPlanck, BevCie.CieX2);
+            double Y2 = BevCie.Integrate(LPlanck, BevCie.CieY2);
+            double Z2 = BevCie.Integrate(LPlanck, BevCie.CieZ2);
+            return new ColorCoordinates(X2, Y2, Z2);
+        }       
+        
         private readonly List<SpectralQuantityValue> spectralValues = new List<SpectralQuantityValue>();
 
     }
