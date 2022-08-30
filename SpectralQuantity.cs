@@ -7,6 +7,8 @@ namespace At.Matus.BevMetrology
 {
     public class SpectralQuantity
     {
+        private readonly List<SpectralQuantityValue> spectralValues = new List<SpectralQuantityValue>();
+
         public string Name { get; private set; }
         public double MinWavelength => spectralValues.First().Lambda;
         public double MaxWavelength => spectralValues.Last().Lambda;
@@ -111,6 +113,15 @@ namespace At.Matus.BevMetrology
                 return double.NaN;
         }
 
+        private ColorCoordinates CalculateColor()
+        {
+            double X2 = BevCie.Integrate(GetValueFor, BevCie.CieX2);
+            double Y2 = BevCie.Integrate(GetValueFor, BevCie.CieY2);
+            double Z2 = BevCie.Integrate(GetValueFor, BevCie.CieZ2);
+            return new ColorCoordinates(X2, Y2, Z2);
+        }
+
+        // Correlated color temperature (CCT) stuff
         private ColorTemperature CalculateCct()
         {
             double cctTemp = EstimateCCT(Color, 500, 100000, 100);
@@ -150,14 +161,6 @@ namespace At.Matus.BevMetrology
             return Math.Sqrt(us + vs * (4 / 9));
         }
 
-        private ColorCoordinates CalculateColor()
-        {
-            double X2 = BevCie.Integrate(GetValueFor, BevCie.CieX2);
-            double Y2 = BevCie.Integrate(GetValueFor, BevCie.CieY2);
-            double Z2 = BevCie.Integrate(GetValueFor, BevCie.CieZ2);
-            return new ColorCoordinates(X2, Y2, Z2);
-        }
-
         private static ColorCoordinates CalculateColorPlanck(double t)
         {
             double LPlanck(int lamb) => BevCie.LPlanck(t, lamb);
@@ -166,8 +169,29 @@ namespace At.Matus.BevMetrology
             double Z2 = BevCie.Integrate(LPlanck, BevCie.CieZ2);
             return new ColorCoordinates(X2, Y2, Z2);
         }       
+
+        // Distribution temperature (TD) stuff
+
+        private double ScalingFactor(double temperature, double wavelength)
+        {
+            double st = GetValueFor(wavelength);
+            double sp = BevCie.LPlanck(temperature, wavelength);
+            return sp / st; // TODO DANGER!
+        }
         
-        private readonly List<SpectralQuantityValue> spectralValues = new List<SpectralQuantityValue>();
+        private double GoodnessTD (double temperature, double lowerWl, double upperWl, double normWl)
+        {
+            double a = ScalingFactor(temperature, normWl);
+            return BevCie.Integrate(FitFunction);
+            double FitFunction(int wavelength) //TODO will not work for UV, IR !
+            {
+                if (wavelength < lowerWl) return 0;
+                if (wavelength > upperWl) return 0;
+                double st = GetValueFor(wavelength);
+                double sp = BevCie.LPlanck(temperature, wavelength);
+                return (1 - st / (a * sp)) * (1 - st / (a * sp));
+            }
+        }
 
     }
 }
