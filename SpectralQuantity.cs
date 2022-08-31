@@ -171,26 +171,51 @@ namespace At.Matus.BevMetrology
             double Y2 = BevCie.Integrate(LPlanck, BevCie.CieY2);
             double Z2 = BevCie.Integrate(LPlanck, BevCie.CieZ2);
             return new ColorCoordinates(X2, Y2, Z2);
-        }       
+        }
 
         // Distribution temperature (TD) stuff
 
         private DistributionTemperature CalculateTD(double lowerWl,
-                                  double upperWL,
+                                  double upperWl,
                                   double scalingWl)
         {
             double dtTemp = FitTD(500,
                                   100000,
                                   100,
                                   lowerWl,
-                                  upperWL,
+                                  upperWl,
                                   scalingWl);
             double[] tPrec = { 100, 10, 1, 0.1, 0.01 };
             foreach (var deltaT in tPrec)
             {
-                dtTemp = FitTD(dtTemp - deltaT, dtTemp + deltaT, deltaT / 10, lowerWl, upperWL, scalingWl);
+                dtTemp = FitTD(dtTemp - deltaT, dtTemp + deltaT, deltaT / 10, lowerWl, upperWl, scalingWl);
             }
-            return new DistributionTemperature(dtTemp, 0);
+            double maxDev = MaxDeviationOfFit(dtTemp, lowerWl, upperWl, scalingWl);
+            return new DistributionTemperature(dtTemp, maxDev);
+        }
+
+        private double MaxDeviationOfFit(double temperature, double lowerWl, double upperWl, double scalingWl)
+        {
+            double a = ScalingFactor(temperature, scalingWl);
+            double maxDev = 0;
+            double dev;
+            foreach (var sqv in spectralValues)
+            {
+                if (sqv.Lambda < lowerWl || sqv.Lambda > upperWl)
+                {
+                    dev = 0;
+                }
+                else
+                {
+                    dev = Math.Abs((sqv.Value - a * BevCie.LPlanck(temperature, sqv.Lambda)) / sqv.Value);
+                }
+                if (dev > maxDev)
+                {
+                    maxDev = dev;
+                }
+
+            }
+            return maxDev;
         }
 
         private double FitTD(double tMin,
@@ -221,7 +246,7 @@ namespace At.Matus.BevMetrology
             double sp = BevCie.LPlanck(temperature, wavelength);
             return st / sp; // TODO DANGER!
         }
-        
+
         private double GoodnessTD(double temperature, double lowerWl, double upperWl, double normWl)
         {
             double a = ScalingFactor(temperature, normWl);
@@ -236,7 +261,5 @@ namespace At.Matus.BevMetrology
                 return (1 - st / (a * sp)) * (1 - st / (a * sp));
             }
         }
-
-        private double GoodnessTD(double temperature) => GoodnessTD(temperature, 400, 750, 560); // standard range as in CIE_TN_013_2022
     }
 }
