@@ -14,6 +14,7 @@ namespace At.Matus.BevMetrology
         public double MaxWavelength => spectralValues.Last().Lambda;
         public ColorCoordinates Color => CalculateColor();
         public ColorTemperature ColorTemperature => CalculateCct();
+        public DistributionTemperature DistributionTemperature => CalculateTD(360, 830, 560);
 
         public SpectralQuantity(string name)
         {
@@ -172,7 +173,7 @@ namespace At.Matus.BevMetrology
 
         // Distribution temperature (TD) stuff
 
-        public double CalculateTD(double lowerWl,
+        private DistributionTemperature CalculateTD(double lowerWl,
                                   double upperWL,
                                   double scalingWl)
         {
@@ -185,15 +186,9 @@ namespace At.Matus.BevMetrology
             double[] tPrec = { 100, 10, 1, 0.1, 0.01 };
             foreach (var deltaT in tPrec)
             {
-                dtTemp = FitTD(
-                    dtTemp - deltaT, 
-                    dtTemp + deltaT, 
-                    deltaT / 10, 
-                    lowerWl, 
-                    upperWL, 
-                    scalingWl);
+                dtTemp = FitTD(dtTemp - deltaT, dtTemp + deltaT, deltaT / 10, lowerWl, upperWL, scalingWl);
             }
-            return dtTemp;
+            return new DistributionTemperature(dtTemp, 0);
         }
 
         private double FitTD(double tMin,
