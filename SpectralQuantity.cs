@@ -172,17 +172,64 @@ namespace At.Matus.BevMetrology
 
         // Distribution temperature (TD) stuff
 
+        public double CalculateTD(double lowerWl,
+                                  double upperWL,
+                                  double scalingWl)
+        {
+            double dtTemp = FitTD(500,
+                                  100000,
+                                  100,
+                                  lowerWl,
+                                  upperWL,
+                                  scalingWl);
+            double[] tPrec = { 100, 10, 1, 0.1, 0.01 };
+            foreach (var deltaT in tPrec)
+            {
+                dtTemp = FitTD(
+                    dtTemp - deltaT, 
+                    dtTemp + deltaT, 
+                    deltaT / 10, 
+                    lowerWl, 
+                    upperWL, 
+                    scalingWl);
+            }
+            return dtTemp;
+        }
+
+        private double FitTD(double tMin,
+                             double tMax,
+                             double deltat,
+                             double lowerWl,
+                             double upperWL,
+                             double scalingWl)
+        {
+            double distanceMin = double.PositiveInfinity;
+            double TD = double.NaN;
+
+            for (double T = tMin; T <= tMax; T = T + deltat)
+            {
+                double distance = GoodnessTD(T, lowerWl, upperWL, scalingWl);
+                if (distance < distanceMin)
+                {
+                    distanceMin = distance;
+                    TD = T;
+                }
+            }
+            return TD;
+        }
+
         private double ScalingFactor(double temperature, double wavelength)
         {
             double st = GetValueFor(wavelength);
             double sp = BevCie.LPlanck(temperature, wavelength);
-            return sp / st; // TODO DANGER!
+            return st / sp; // TODO DANGER!
         }
         
-        private double GoodnessTD (double temperature, double lowerWl, double upperWl, double normWl)
+        private double GoodnessTD(double temperature, double lowerWl, double upperWl, double normWl)
         {
             double a = ScalingFactor(temperature, normWl);
             return BevCie.Integrate(FitFunction);
+
             double FitFunction(int wavelength) //TODO will not work for UV, IR !
             {
                 if (wavelength < lowerWl) return 0;
@@ -193,5 +240,6 @@ namespace At.Matus.BevMetrology
             }
         }
 
+        private double GoodnessTD(double temperature) => GoodnessTD(temperature, 400, 750, 560); // standard range as in CIE_TN_013_2022
     }
 }

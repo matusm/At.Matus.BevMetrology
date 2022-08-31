@@ -2,8 +2,8 @@
 {
     public class ColorTemperature
     {
-        public double Cct { get; private set; } = double.NaN;
-        public double ChomaticityDifference { get; private set; } = double.NaN;
+        public double Cct { get; } = double.NaN;
+        public double ChomaticityDifference { get; } = double.NaN;
         public Applicability Status => CheckDifference();
 
         public ColorTemperature(double t, double delta)
