@@ -12,6 +12,8 @@ namespace At.Matus.BevMetrology
         public string Name { get; private set; }
         public double MinWavelength => spectralValues.First().Lambda;
         public double MaxWavelength => spectralValues.Last().Lambda;
+        public double CCT => ColorTemperature.Cct;
+        public double TD => DistributionTemperature.Td;
         public ColorCoordinates Color => CalculateColor();
         public ColorTemperature ColorTemperature => CalculateCct();
         public DistributionTemperature DistributionTemperature => CalculateTD(360, 830, 560);
