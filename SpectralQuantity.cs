@@ -12,6 +12,7 @@ namespace At.Matus.BevMetrology
         public string Name { get; private set; }
         public double MinWavelength => spectralValues.First().Lambda;
         public double MaxWavelength => spectralValues.Last().Lambda;
+        public int NumberOfValues => spectralValues.Count;
         public double CCT => ColorTemperature.Cct;
         public double TD => DistributionTemperature.Td;
         public ColorCoordinates Color => CalculateColor();
@@ -70,6 +71,11 @@ namespace At.Matus.BevMetrology
         public double GetValueFor(int wavelength)
         {
             return GetValueFor((double)wavelength);
+        }
+
+        public void ClearAllValues()
+        {
+            spectralValues.Clear();
         }
 
         public static SpectralQuantity LoadFromCsv(string filename)
