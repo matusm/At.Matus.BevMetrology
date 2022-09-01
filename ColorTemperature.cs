@@ -4,7 +4,7 @@
     {
         public double CCT { get; } = double.NaN;
         public double ChomaticityDifference { get; } = double.NaN;
-        public CctApplicability Status => AssessStatus();
+        public RadiationTemperatureStatus Status => AssessStatus();
 
         public ColorTemperature(double t, double delta)
         {
@@ -12,13 +12,13 @@
             ChomaticityDifference = delta;
         }
 
-        private CctApplicability AssessStatus()
+        private RadiationTemperatureStatus AssessStatus()
         {
-            if (double.IsNaN(CCT)) return CctApplicability.Unknown;
-            if (double.IsNaN(ChomaticityDifference)) return CctApplicability.Unknown;
-            if(ChomaticityDifference <= 5e-4) return CctApplicability.ColorTemperature;
-            if (ChomaticityDifference <= 5e-2) return CctApplicability.CorrelatedColorTemperature;
-            return CctApplicability.NotApplicable;
+            if (double.IsNaN(CCT)) return RadiationTemperatureStatus.Unknown;
+            if (double.IsNaN(ChomaticityDifference)) return RadiationTemperatureStatus.Unknown;
+            if(ChomaticityDifference <= 5e-4) return RadiationTemperatureStatus.ValidColorTemperature;
+            if (ChomaticityDifference <= 5e-2) return RadiationTemperatureStatus.ValidCorrelatedColorTemperature;
+            return RadiationTemperatureStatus.NotValid;
         }
 
     }
