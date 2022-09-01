@@ -7,17 +7,18 @@ namespace At.Matus.BevMetrology
 {
     public class SpectralQuantity
     {
+
         private readonly List<SpectralQuantityValue> spectralValues = new List<SpectralQuantityValue>();
 
         public string Name { get; private set; }
         public double MinWavelength => spectralValues.First().Lambda;
         public double MaxWavelength => spectralValues.Last().Lambda;
         public int NumberOfValues => spectralValues.Count;
-        public double CCT => ColorTemperature.Cct;
-        public double TD => DistributionTemperature.Td;
+        public double CCT => ColorTemperature.CCT;
+        public double TD => DistributionTemperature.TD;
         public ColorCoordinates Color => CalculateColor();
         public ColorTemperature ColorTemperature => CalculateCct();
-        public DistributionTemperature DistributionTemperature => CalculateTD(360, 830, 560);
+        public DistributionTemperature DistributionTemperature => CalculateTD();
 
         public SpectralQuantity(string name)
         {
@@ -181,33 +182,30 @@ namespace At.Matus.BevMetrology
 
         // Distribution temperature (TD) stuff
 
-        private DistributionTemperature CalculateTD(double lowerWl,
-                                  double upperWl,
-                                  double scalingWl)
+        private const double lowerWavelengthLimitTD = 360;
+        private const double upperWavelengthLimitTD = 830;
+        private const double scalingWavelengthTD = 560;
+
+        private DistributionTemperature CalculateTD()
         {
-            double dtTemp = FitTD(500,
-                                  100000,
-                                  100,
-                                  lowerWl,
-                                  upperWl,
-                                  scalingWl);
+            double dtTemp = FitTD(500,100000,100);
             double[] tPrec = { 100, 10, 1, 0.1, 0.01 };
             foreach (var deltaT in tPrec)
             {
-                dtTemp = FitTD(dtTemp - deltaT, dtTemp + deltaT, deltaT / 10, lowerWl, upperWl, scalingWl);
+                dtTemp = FitTD(dtTemp - deltaT, dtTemp + deltaT, deltaT / 10);
             }
-            double maxDev = MaxDeviationOfFit(dtTemp, lowerWl, upperWl, scalingWl);
+            double maxDev = MaxDeviationOfFit(dtTemp);
             return new DistributionTemperature(dtTemp, maxDev);
         }
 
-        private double MaxDeviationOfFit(double temperature, double lowerWl, double upperWl, double scalingWl)
+        private double MaxDeviationOfFit(double temperature)
         {
-            double a = ScalingFactor(temperature, scalingWl);
+            double a = ScalingFactor(temperature, scalingWavelengthTD);
             double maxDev = 0;
             double dev;
             foreach (var sqv in spectralValues)
             {
-                if (sqv.Lambda < lowerWl || sqv.Lambda > upperWl)
+                if (sqv.Lambda < lowerWavelengthLimitTD || sqv.Lambda > upperWavelengthLimitTD)
                 {
                     dev = 0;
                 }
@@ -224,19 +222,14 @@ namespace At.Matus.BevMetrology
             return maxDev;
         }
 
-        private double FitTD(double tMin,
-                             double tMax,
-                             double deltat,
-                             double lowerWl,
-                             double upperWL,
-                             double scalingWl)
+        private double FitTD(double tMin, double tMax, double deltat)
         {
             double distanceMin = double.PositiveInfinity;
             double TD = double.NaN;
 
             for (double T = tMin; T <= tMax; T = T + deltat)
             {
-                double distance = GoodnessTD(T, lowerWl, upperWL, scalingWl);
+                double distance = GoodnessTD(T);
                 if (distance < distanceMin)
                 {
                     distanceMin = distance;
@@ -253,15 +246,15 @@ namespace At.Matus.BevMetrology
             return st / sp; // TODO DANGER!
         }
 
-        private double GoodnessTD(double temperature, double lowerWl, double upperWl, double normWl)
+        private double GoodnessTD(double temperature)
         {
-            double a = ScalingFactor(temperature, normWl);
+            double a = ScalingFactor(temperature, scalingWavelengthTD);
             return BevCie.Integrate(FitFunction);
 
             double FitFunction(int wavelength) //TODO will not work for UV, IR !
             {
-                if (wavelength < lowerWl) return 0;
-                if (wavelength > upperWl) return 0;
+                if (wavelength < lowerWavelengthLimitTD) return 0;
+                if (wavelength > upperWavelengthLimitTD) return 0;
                 double st = GetValueFor(wavelength);
                 double sp = BevCie.LPlanck(temperature, wavelength);
                 return (1 - st / (a * sp)) * (1 - st / (a * sp));
