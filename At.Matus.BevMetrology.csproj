@@ -32,6 +32,7 @@
   <ItemGroup>
     <Compile Include="DistributionTemperature.cs" />
     <Compile Include="ColorCoordinates.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BevCie.cs" />
     <Compile Include="ColorTemperature.cs" />

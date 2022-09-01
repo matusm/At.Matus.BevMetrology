@@ -4,7 +4,7 @@
     {
         public double CCT { get; } = double.NaN;
         public double ChomaticityDifference { get; } = double.NaN;
-        public Applicability Status => CheckDifference();
+        public CctApplicability Status => AssessStatus();
 
         public ColorTemperature(double t, double delta)
         {
@@ -12,22 +12,16 @@
             ChomaticityDifference = delta;
         }
 
-        private Applicability CheckDifference()
+        private CctApplicability AssessStatus()
         {
-            if (double.IsNaN(CCT)) return Applicability.Unknown;
-            if (double.IsNaN(ChomaticityDifference)) return Applicability.Unknown;
-            if(ChomaticityDifference <= 5e-4) return Applicability.ColorTemperature;
-            if (ChomaticityDifference <= 5e-2) return Applicability.CorrelatedColorTemperature;
-            return Applicability.NotApplicable;
+            if (double.IsNaN(CCT)) return CctApplicability.Unknown;
+            if (double.IsNaN(ChomaticityDifference)) return CctApplicability.Unknown;
+            if(ChomaticityDifference <= 5e-4) return CctApplicability.ColorTemperature;
+            if (ChomaticityDifference <= 5e-2) return CctApplicability.CorrelatedColorTemperature;
+            return CctApplicability.NotApplicable;
         }
 
     }
 
-    public enum Applicability
-    {
-        Unknown,
-        ColorTemperature,
-        CorrelatedColorTemperature,
-        NotApplicable
-    }
+
 }
