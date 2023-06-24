@@ -25,10 +25,7 @@ namespace At.Matus.BevMetrology
             double L = a / (wavelength * wavelength * wavelength * wavelength * wavelength * (Math.Exp(b / (wavelength * T)) - 1.0));
             return L;
         }
-        public static double LPlanck(double T, int wavelength)
-        {
-            return LPlanck(T, (double)wavelength);
-        }
+        public static double LPlanck(double T, int wavelength) => LPlanck(T, (double)wavelength);
 
         /// <summary>
         /// CIE Illuminant A 
@@ -42,10 +39,7 @@ namespace At.Matus.BevMetrology
             double Sa = 100.0 * wn * wn * wn * wn * wn;
             return Sa * Math.Exp(1.435e7 / 1594880.0 - 1.0) / Math.Exp(1.435e7 / (2848.0 * wavelength) - 1.0);
         }
-        public static double CieIlluminantA(int wavelength)
-        {
-            return CieIlluminantA((double)wavelength);
-        }
+        public static double CieIlluminantA(int wavelength) => CieIlluminantA((double)wavelength);
 
         /// <summary>
         /// Spectral luminous efficiency for photopic vision
@@ -53,10 +47,7 @@ namespace At.Matus.BevMetrology
         /// <param name="wavelength">Wavelength in air, in nm</param>
         /// <returns>Value for given wavelength</returns>
         /// <remarks>Reference: Rapport BIPM-2019/05</remarks>
-        public static double CieV(int wavelength)
-        {
-            return ConvertArrayToFunction(wavelength, cieV, 360);
-        }
+        public static double CieV(int wavelength) => ConvertArrayToFunction(wavelength, cieV, 360);
 
         /// <summary>
         /// Spectral luminous efficiency for scotopic vision
@@ -64,10 +55,7 @@ namespace At.Matus.BevMetrology
         /// <param name="wavelength">Wavelength in air, in nm</param>
         /// <returns>Value for given wavelength</returns>
         /// <remarks>Reference: Rapport BIPM-2019/05</remarks>
-        public static double CieVs(int wavelength)
-        {
-            return ConvertArrayToFunction(wavelength, cieVs, 380);
-        }
+        public static double CieVs(int wavelength) => ConvertArrayToFunction(wavelength, cieVs, 380);
 
         /// <summary>
         /// CIE 1931 colour-matching function, x_bar
@@ -75,10 +63,7 @@ namespace At.Matus.BevMetrology
         /// <param name="wavelength">Wavelength in air, in nm</param>
         /// <returns>Value for given wavelength</returns>
         /// <remarks>Reference: Rapport BIPM-2019/05</remarks>
-        public static double CieX2(int wavelength)
-        {
-            return ConvertArrayToFunction(wavelength, cieX2, 360);
-        }
+        public static double CieX2(int wavelength) => ConvertArrayToFunction(wavelength, cieX2, 360);
 
         /// <summary>
         /// CIE 1931 colour-matching function, y_bar
@@ -86,10 +71,7 @@ namespace At.Matus.BevMetrology
         /// <param name="wavelength">Wavelength in air, in nm</param>
         /// <returns>Value for given wavelength</returns>
         /// <remarks>Reference: Rapport BIPM-2019/05</remarks>
-        public static double CieY2(int wavelength)
-        {
-            return CieV(wavelength);
-        }
+        public static double CieY2(int wavelength) => CieV(wavelength);
 
         /// <summary>
         /// CIE 1931 colour-matching function, z_bar
@@ -97,10 +79,7 @@ namespace At.Matus.BevMetrology
         /// <param name="wavelength">Wavelength in air, in nm</param>
         /// <returns>Value for given wavelength</returns>
         /// <remarks>Reference: Rapport BIPM-2019/05</remarks>
-        public static double CieZ2(int wavelength)
-        {
-            return ConvertArrayToFunction(wavelength, cieZ2, 360);
-        }
+        public static double CieZ2(int wavelength) => ConvertArrayToFunction(wavelength, cieZ2, 360);
 
         /// <summary>
         /// Spectral mismatch correction factor relativ to CIE Illuminant A.
@@ -125,19 +104,13 @@ namespace At.Matus.BevMetrology
         /// <returns></returns>
         public static double CcfStar(Func<int, double> specResponse, double temperature)
         {
-            double plank(int i)
-            {
-                return LPlanck(temperature, i);
-            }
+            double plank(int i) => LPlanck(temperature, i);
             return CcfStar(specResponse, plank);
         }
 
         public static double Integrate(Func<int, double> spec, Func<int, double> weight)
         {
-            double weightedSpec(int i)
-            {
-                return spec(i) * weight(i);
-            }
+            double weightedSpec(int i) => spec(i) * weight(i);
             return Integrate(weightedSpec);
         }
 
