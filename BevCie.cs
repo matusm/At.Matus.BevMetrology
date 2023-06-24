@@ -29,6 +29,8 @@ namespace At.Matus.BevMetrology
 
         /// <summary>
         /// CIE Illuminant A 
+        /// ÖNORM EN ISO/CIE 11664-2:2023
+        /// entspricht T = 2855.496 K
         /// </summary>
         /// <param name="wavelength">Wavelength in air, in nm</param>
         /// <returns>Value for given wavelength</returns>
@@ -125,6 +127,8 @@ namespace At.Matus.BevMetrology
         }
 
         #region private stuff
+
+        // TODO implement D65, D50, cieX10, cieY10, cieZ10
 
         private static readonly double[] cieV = new double[]
         {
