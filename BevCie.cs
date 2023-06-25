@@ -39,7 +39,8 @@ namespace At.Matus.BevMetrology
         {
             double wn = 560.0 / wavelength;
             double Sa = 100.0 * wn * wn * wn * wn * wn;
-            return Sa * Math.Exp(1.435e7 / 1594880.0 - 1.0) / Math.Exp(1.435e7 / (2848.0 * wavelength) - 1.0);
+            //return Sa * Math.Exp(1.435e7 / 1594880.0 - 1.0) / Math.Exp(1.435e7 / (2848.0 * wavelength) - 1.0);
+            return Sa * 2973.6401909984637410149000242727 / Math.Exp(1.435e7 / (2848.0 * wavelength) - 1.0);
         }
         public static double CieIlluminantA(int wavelength) => CieIlluminantA((double)wavelength);
 
