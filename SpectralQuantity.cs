@@ -73,7 +73,30 @@ namespace At.Matus.BevMetrology
         public static SpectralQuantity FromCieIlluminantA()
         {
             SpectralQuantity spectrum = new SpectralQuantity("CIE Illuminant A");
-            //TODO
+            for (int l = 300; l <= 830; l++)
+            {
+                spectrum.AddValue(new SpectralQuantityValue((double)l, BevCie.CieIlluminantA(l)));
+            }
+            return spectrum;
+        }
+
+        public static SpectralQuantity FromCieIlluminantD65()
+        {
+            SpectralQuantity spectrum = new SpectralQuantity("CIE Illuminant D65");
+            for (int l = 300; l <= 830; l++)
+            {
+                spectrum.AddValue(new SpectralQuantityValue((double)l, BevCie.CieIlluminantD65(l)));
+            }
+            return spectrum;
+        }
+
+        public static SpectralQuantity FromCieIlluminantD50()
+        {
+            SpectralQuantity spectrum = new SpectralQuantity("CIE Illuminant D50");
+            for (int l = 300; l <= 830; l++)
+            {
+                spectrum.AddValue(new SpectralQuantityValue((double)l, BevCie.CieIlluminantD50(l)));
+            }
             return spectrum;
         }
 
