@@ -21,7 +21,7 @@ namespace At.Matus.BevMetrology
         public static double LPlanck(double T, double wavelength)
         {
             const double a = 1.19037602e20;
-            const double b = 1.4383725e7;
+            const double b = 1.4387768775e7;
             double L = a / (wavelength * wavelength * wavelength * wavelength * wavelength * (Math.Exp(b / (wavelength * T)) - 1.0));
             return L;
         }
