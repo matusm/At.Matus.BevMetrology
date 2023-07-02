@@ -18,11 +18,15 @@ namespace At.Matus.BevMetrology
         /// <remarks>Brechzahl fuer Normalluft n  = 1.00028</remarks>
         /// <remarks>1.Strahlungskonstante     c1 = 3.7417749e-16 W.s^2</remarks>
         /// <remarks>2.Strahlungskonstante     c2 = 1.438769e-2 m.K</remarks>
+        /// <remarks>Update! SI 2019 </remarks>
+        /// <remarks>Wellenlänge in Vakuum</remarks>
+        /// <remarks>1.Strahlungskonstante     c1 = 1.191 042 972 E-16 W m^2 sr^-1 </remarks>
+        /// <remarks>2.Strahlungskonstante     c2 = 1.438 776 877 5 E-2 m K </remarks>
         public static double LPlanck(double T, double wavelength)
         {
-            const double a = 1.19037602e20;
-            const double b = 1.4387768775e7;
-            double L = a / (wavelength * wavelength * wavelength * wavelength * wavelength * (Math.Exp(b / (wavelength * T)) - 1.0));
+            const double c1 = 1.191_042_972e20; // ob wirklich?
+            const double c2 = 1.438_776_877_5e7;
+            double L = c1 / (wavelength * wavelength * wavelength * wavelength * wavelength * (Math.Exp(c2 / (wavelength * T)) - 1.0));
             return L;
         }
         public static double LPlanck(double T, int wavelength) => LPlanck(T, (double)wavelength);
