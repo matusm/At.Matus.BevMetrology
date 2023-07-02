@@ -13,9 +13,6 @@ namespace At.Matus.BevMetrology
             Value = value;
         }
 
-        public int CompareTo(SpectralQuantityValue other)
-        {
-            return Lambda.CompareTo(other.Lambda);
-        }
+        public int CompareTo(SpectralQuantityValue other) => Lambda.CompareTo(other.Lambda);
     }
 }

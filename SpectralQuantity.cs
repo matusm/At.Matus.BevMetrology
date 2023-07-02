@@ -31,10 +31,7 @@ namespace At.Matus.BevMetrology
             spectralValues.Sort();
         }
 
-        public void AddValue(double wavelength, double value)
-        {
-            AddValue(new SpectralQuantityValue(wavelength, value));
-        }
+        public void AddValue(double wavelength, double value) => AddValue(new SpectralQuantityValue(wavelength, value));
 
         public double GetValueFor(double wavelength)
         {
@@ -69,14 +66,15 @@ namespace At.Matus.BevMetrology
             return y;
         }
 
-        public double GetValueFor(int wavelength)
-        {
-            return GetValueFor((double)wavelength);
-        }
+        public double GetValueFor(int wavelength) => GetValueFor((double)wavelength);
 
-        public void ClearAllValues()
+        public void ClearAllValues() => spectralValues.Clear();
+
+        public static SpectralQuantity FromCieIlluminantA()
         {
-            spectralValues.Clear();
+            SpectralQuantity spectrum = new SpectralQuantity("CIE Illuminant A");
+            //TODO
+            return spectrum;
         }
 
         public static SpectralQuantity LoadFromCsv(string filename)
