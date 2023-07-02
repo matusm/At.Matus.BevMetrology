@@ -150,7 +150,7 @@ namespace At.Matus.BevMetrology
 
         #region private stuff
 
-        // TODO implement D65, D50, cieX10, cieY10, cieZ10
+        // TODO implement cieX10, cieY10, cieZ10
 
         private static readonly double[] cieV = new double[]
         {

@@ -7,9 +7,6 @@ namespace At.Matus.BevMetrology
 {
     public class SpectralQuantity
     {
-
-        private readonly List<SpectralQuantityValue> spectralValues = new List<SpectralQuantityValue>();
-
         public string Name { get; private set; }
         public double MinWavelength => spectralValues.First().Lambda;
         public double MaxWavelength => spectralValues.Last().Lambda;
@@ -189,7 +186,7 @@ namespace At.Matus.BevMetrology
         {
             double us = (up - u) * (up - u);
             double vs = (vp - v) * (vp - v);
-            return Math.Sqrt(us + vs * (4 / 9));
+            return Math.Sqrt(us + vs * (4.0 / 9.0));
         }
 
         private static ColorCoordinates CalculateColorPlanck(double t)
@@ -281,5 +278,7 @@ namespace At.Matus.BevMetrology
                 return (1 - st / (a * sp)) * (1 - st / (a * sp));
             }
         }
+
+        private readonly List<SpectralQuantityValue> spectralValues = new List<SpectralQuantityValue>();
     }
 }

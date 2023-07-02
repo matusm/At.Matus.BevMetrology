@@ -16,7 +16,7 @@
         {
             if (double.IsNaN(CCT)) return RadiationTemperatureStatus.Unknown;
             if (double.IsNaN(ChomaticityDifference)) return RadiationTemperatureStatus.Unknown;
-            if(ChomaticityDifference <= 5e-4) return RadiationTemperatureStatus.ValidColorTemperature;
+            if (ChomaticityDifference <= 5e-4) return RadiationTemperatureStatus.ValidColorTemperature;
             if (ChomaticityDifference <= 5e-2) return RadiationTemperatureStatus.ValidCorrelatedColorTemperature;
             return RadiationTemperatureStatus.NotValid;
         }
