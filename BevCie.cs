@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace At.Matus.BevMetrology
 {
@@ -2881,6 +2882,32 @@ namespace At.Matus.BevMetrology
                 return 0.0;
             return array[index];
         }
+        #endregion
+
+        #region Methods for validation
+
+        private static double SumAllValues(double[] tabularData)
+        {
+            double sum = 0;
+            foreach (var value in tabularData)
+                sum += value;
+            return sum;
+        }
+
+        public static void Validate()
+        {
+            double[][] tables = new double[][] { cieV, cieX2, cieZ2, cieVs, cieD65, cieD50 };
+            Console.WriteLine("============================================");
+            Console.WriteLine("Validation of numerical tables");
+            for (int i = 0; i < tables.Length; i++)
+            {
+                Console.WriteLine($"   table #{i,2} : {SumAllValues(tables[i]):F14}");
+            }
+            Console.WriteLine("============================================");
+        }
+
+
+
         #endregion
     }
 }

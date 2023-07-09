@@ -13,4 +13,4 @@ A small static class to provide functions for uniform and normal dsitributed pse
 A collection of `SpectralQuantityValue`. Provides some methods for interpolation, loading from CSV files and randomisation for Monte Carlo simulations.
 
 ## SpectralQuantityValue
-Ordered pair of a wavelength value and an associated spectral quantity value. Can be ordered via the wavelength value. 
+Ordered pair of a wavelength value and an associated spectral quantity value. Can be sorted via the wavelength value. 
