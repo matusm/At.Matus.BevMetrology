@@ -106,6 +106,11 @@ namespace At.Matus.BevMetrology
         /// <remarks>Reference: Rapport BIPM-2019/05</remarks>
         public static double CieZ2(int wavelength) => ConvertArrayToFunction(wavelength, cieZ2, 360);
 
+        public static double CieX10(int wavelength) => ConvertArrayToFunction(wavelength, cieX10, 360);
+        public static double CieY10(int wavelength) => ConvertArrayToFunction(wavelength, cieY10, 360);
+        public static double CieZ10(int wavelength) => ConvertArrayToFunction(wavelength, cieZ10, 360);
+        public static double CieV10(int wavelength) => CieY10(wavelength);
+
         /// <summary>
         /// Spectral mismatch correction factor relativ to CIE Illuminant A.
         /// </summary>
