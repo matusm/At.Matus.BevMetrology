@@ -8,19 +8,29 @@ namespace At.Matus.BevMetrology
     public class SpectralQuantity
     {
         public string Name { get; private set; }
+
         public double MinWavelength => spectralValues.First().Lambda;
+
         public double MaxWavelength => spectralValues.Last().Lambda;
+
         public int NumberOfValues => spectralValues.Count;
+
         public double CCT => ColorTemperature.CCT;
+
         public double TD => DistributionTemperature.TD;
+
         public ColorCoordinates Color => CalculateColor();
+
         public ColorTemperature ColorTemperature => CalculateCct();
+
         public DistributionTemperature DistributionTemperature => CalculateTD();
+
 
         public SpectralQuantity(string name)
         {
             Name = name.Trim();
         }
+
 
         public void AddValue(SpectralQuantityValue spectralValue)
         {
@@ -149,7 +159,7 @@ namespace At.Matus.BevMetrology
             return new ColorCoordinates(X2, Y2, Z2);
         }
 
-        // Correlated color temperature (CCT) stuff
+        #region Correlated color temperature (CCT) stuff
         private ColorTemperature CalculateCct()
         {
             double cctTemp = EstimateCCT(Color, 500, 100000, 100);
@@ -197,8 +207,9 @@ namespace At.Matus.BevMetrology
             double Z2 = BevCie.Integrate(LPlanck, BevCie.CieZ2);
             return new ColorCoordinates(X2, Y2, Z2);
         }
+        #endregion
 
-        // Distribution temperature (TD) stuff
+        #region Distribution temperature (TD) stuff
 
         private const double lowerWavelengthLimitTD = 360;
         private const double upperWavelengthLimitTD = 830;
@@ -206,7 +217,7 @@ namespace At.Matus.BevMetrology
 
         private DistributionTemperature CalculateTD()
         {
-            double dtTemp = FitTD(500,100000,100);
+            double dtTemp = FitTD(500, 100000, 100);
             double[] tPrec = { 100, 10, 1, 0.1, 0.01 };
             foreach (var deltaT in tPrec)
             {
@@ -278,6 +289,7 @@ namespace At.Matus.BevMetrology
                 return (1 - st / (a * sp)) * (1 - st / (a * sp));
             }
         }
+        #endregion
 
         private readonly List<SpectralQuantityValue> spectralValues = new List<SpectralQuantityValue>();
     }

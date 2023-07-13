@@ -20,8 +20,5 @@
             if (ChomaticityDifference <= 5e-2) return RadiationTemperatureStatus.ValidCorrelatedColorTemperature;
             return RadiationTemperatureStatus.NotValid;
         }
-
     }
-
-
 }
