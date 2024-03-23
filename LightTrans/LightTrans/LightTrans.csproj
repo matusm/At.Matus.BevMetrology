@@ -36,6 +36,9 @@
     <Reference Include="At.Matus.BevMetrology">
       <HintPath>..\..\bin\Release\At.Matus.BevMetrology.dll</HintPath>
     </Reference>
+    <Reference Include="At.Matus.StatisticPod">
+      <HintPath>..\..\..\At.Matus.StatisticPod\bin\Release\At.Matus.StatisticPod.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
