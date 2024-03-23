@@ -25,6 +25,7 @@ namespace LightTrans
             Console.WriteLine();
             Console.WriteLine($"File '{spectralTransmission.Name}' with {spectralTransmission.NumberOfValues} values.");
             Console.WriteLine($"Wavelength range: {spectralTransmission.MinWavelength} nm to {spectralTransmission.MaxWavelength} nm.");
+            Console.WriteLine($"Value range: {spectralTransmission.MinValue} % to {spectralTransmission.MaxValue} %.");
             Console.WriteLine();
 
             double z = BevCie.Integrate(spectralTransmission.GetValueFor, BevCie.CieIlluminantA, BevCie.CieV);

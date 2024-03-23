@@ -13,6 +13,10 @@ namespace At.Matus.BevMetrology
 
         public double MaxWavelength => spectralValues.Last().Lambda;
 
+        public double MinValue => GetMinValue();
+
+        public double MaxValue => GetMaxValue();
+
         public int NumberOfValues => spectralValues.Count;
 
         public double CCT => ColorTemperature.CCT;
@@ -26,10 +30,7 @@ namespace At.Matus.BevMetrology
         public DistributionTemperature DistributionTemperature => CalculateTD();
 
 
-        public SpectralQuantity(string name)
-        {
-            Name = name.Trim();
-        }
+        public SpectralQuantity(string name) => Name = name.Trim();
 
 
         public void AddValue(SpectralQuantityValue spectralValue)
@@ -142,6 +143,26 @@ namespace At.Matus.BevMetrology
                 randomizedSpectralQuantity.AddValue(value.Lambda, newValue);
             }
             return randomizedSpectralQuantity;
+        }
+
+        private double GetMinValue()
+        {
+            double temp = double.MaxValue;
+            foreach (var s in spectralValues)
+            {
+                if (s.Value < temp) temp = s.Value;
+            }
+            return temp;
+        }
+
+        private double GetMaxValue()
+        {
+            double temp = double.MinValue;
+            foreach (var s in spectralValues)
+            {
+                if (s.Value > temp) temp = s.Value;
+            }
+            return temp;
         }
 
         private static double MyParse(string token)
