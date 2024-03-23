@@ -138,6 +138,12 @@ namespace At.Matus.BevMetrology
             return CcfStar(specResponse, plank);
         }
 
+        public static double Integrate(Func<int, double> spec, Func<int, double> weight, Func<int, double> source)
+        {
+            double weightedSpec(int i) => spec(i) * weight(i) * source(i);
+            return Integrate(weightedSpec);
+        }
+
         public static double Integrate(Func<int, double> spec, Func<int, double> weight)
         {
             double weightedSpec(int i) => spec(i) * weight(i);
