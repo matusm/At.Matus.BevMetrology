@@ -114,7 +114,8 @@ namespace At.Matus.BevMetrology
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
-                var tokens = line.Split(',', ';', ' ', '\t');
+                char[] delimiter = { ',', ';', ' ', '\t' };
+                var tokens = line.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
                 if (tokens.Length == 2)
                 {
                     double x = MyParse(tokens[0]);

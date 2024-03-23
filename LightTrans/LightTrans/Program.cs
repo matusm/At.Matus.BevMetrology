@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using At.Matus.BevMetrology;
 
 namespace LightTrans
@@ -11,6 +7,8 @@ namespace LightTrans
     {
         static int Main(string[] args)
         {
+
+
             #region filename logic
             if (args.Length==0)
             {
@@ -22,11 +20,17 @@ namespace LightTrans
 
             SpectralQuantity spectralTransmission = SpectralQuantity.LoadFromCsv(filename);
             
-            Console.WriteLine($"File {spectralTransmission.Name} with {spectralTransmission.NumberOfValues}");
-            Console.WriteLine($"Wavelength range {spectralTransmission.MinWavelength} nm to{spectralTransmission.MaxWavelength} nm.");
+            Console.WriteLine($"File {spectralTransmission.Name} with {spectralTransmission.NumberOfValues} values.");
+            Console.WriteLine($"Wavelength range {spectralTransmission.MinWavelength} nm to {spectralTransmission.MaxWavelength} nm.");
+            Console.WriteLine();
 
-            SpectralQuantity lamp = SpectralQuantity.FromCieIlluminantA();
+            double z = BevCie.Integrate(spectralTransmission.GetValueFor, BevCie.CieIlluminantA, BevCie.CieV);
+            double n = BevCie.Integrate(BevCie.CieIlluminantA, BevCie.CieV);
+            double lightTransmission = z / n;
 
+            Console.WriteLine($"Light transmission factor: {lightTransmission}");
+            Console.WriteLine();
+            
             return 0;
         }
     }
