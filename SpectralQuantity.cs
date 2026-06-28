@@ -29,9 +29,7 @@ namespace At.Matus.BevMetrology
 
         public DistributionTemperature DistributionTemperature => CalculateTD();
 
-
         public SpectralQuantity(string name) => Name = name.Trim();
-
 
         public void AddValue(SpectralQuantityValue spectralValue)
         {
@@ -233,8 +231,10 @@ namespace At.Matus.BevMetrology
 
         #region Distribution temperature (TD) stuff
 
-        private const double lowerWavelengthLimitTD = 360;
-        private const double upperWavelengthLimitTD = 830;
+        //private const double lowerWavelengthLimitTD = 360;
+        //private const double upperWavelengthLimitTD = 830;
+        private const double lowerWavelengthLimitTD = 400;
+        private const double upperWavelengthLimitTD = 750;
         private const double scalingWavelengthTD = 560;
 
         private DistributionTemperature CalculateTD()
